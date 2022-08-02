@@ -2,15 +2,6 @@
 
 A new Flutter project.
 
-## Getting Started
+## About
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+I am building this app to practice Flutter, Agora, and Riverpod. This is an iPod themed video player that will display video calls in the iPod display and other video features down the road. The buttons and the wheel function depending on the widget in the display. Riverpod manages the active display, button controls, and other state needs.
