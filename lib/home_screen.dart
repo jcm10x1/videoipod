@@ -36,10 +36,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              Container(
-                color: Colors.black,
-                child: Row(children: touchBarInstance.getChildren),
-              ),
+              TouchBarWidget(),
               const SizedBox(height: 40),
               const ControlsWidget(),
             ],
