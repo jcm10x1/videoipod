@@ -3,38 +3,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TouchBar {
   final List<Widget> _children = [];
-  TouchBar copyWith({required List<Widget> children}) {
-    final newInstance = TouchBar();
-    newInstance._children.addAll(children);
-    return newInstance;
-  }
 }
 
-class TouchBarNotifier extends StateNotifier<TouchBar> {
-  TouchBarNotifier() : super(TouchBar());
-
+class TouchBarNotifier extends ChangeNotifier {
+  final touchBarInstance = TouchBar();
   void add(Widget child) {
-    state = state.copyWith(children: [...state._children, child]);
+    touchBarInstance._children.add(child);
+    notifyListeners();
   }
 
   void addAll(List<Widget> children) {
-    state = state.copyWith(children: [...state._children, ...children]);
+    touchBarInstance._children.addAll(children);
+    notifyListeners();
   }
 
   void replace(int index, Widget newWidget) {
-    state._children[index] = newWidget;
-    state = state.copyWith(children: [...state._children]);
+    touchBarInstance._children[index] = newWidget;
+    notifyListeners();
   }
 
   void clear() {
-    state = state.copyWith(children: []);
+    touchBarInstance._children.clear();
+    notifyListeners();
   }
 
-  List<Widget> get getChildren => state._children;
+  List<Widget> get getChildren => touchBarInstance._children;
 }
 
-final touchBarProvider =
-    StateNotifierProvider<TouchBarNotifier, TouchBar>((ref) {
+final touchBarProvider = ChangeNotifierProvider<TouchBarNotifier>((ref) {
   return TouchBarNotifier();
 });
 //TODO try accessing list methods with regular provider
