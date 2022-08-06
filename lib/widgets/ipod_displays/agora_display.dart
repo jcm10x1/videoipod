@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:videoipod/models/agora_engine.dart';
 import 'package:videoipod/models/touch_bar.dart';
 import 'package:videoipod/widgets/ipod_displays/menu.dart';
-
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../display_widget.dart';
 
 class AgoraDisplay extends ConsumerWidget {
@@ -92,7 +92,14 @@ class AgoraDisplay extends ConsumerWidget {
               ],
             );
           }
-          return const CircularProgressIndicator();
+          return PlatformCircularProgressIndicator(
+            cupertino: (context, platform) {
+              return CupertinoProgressIndicatorData(
+                color: Colors.white,
+                radius: 50,
+              );
+            },
+          );
         });
   }
 }
@@ -111,11 +118,16 @@ class RoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RawMaterialButton(
-      onPressed: onPressed,
-      shape: CircleBorder(),
-      fillColor: backgroundColor,
-      child: icon,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RawMaterialButton(
+        onPressed: onPressed,
+        shape: CircleBorder(),
+        constraints: const BoxConstraints(),
+        fillColor: backgroundColor,
+        padding: EdgeInsets.all(8),
+        child: icon,
+      ),
     );
   }
 }

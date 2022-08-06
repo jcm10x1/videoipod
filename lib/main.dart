@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'widgets/home_screen.dart';
 
@@ -12,15 +14,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          //HERE
-          primarySwatch: Colors.blue,
-        ),
-        home: const HomeScreen(),
-      ),
+    return PlatformProvider(
+      builder: (BuildContext context) {
+        return ProviderScope(
+          child: PlatformApp(
+            material: (context, platform) => MaterialAppData(
+              theme: ThemeData.light(),
+            ),
+            cupertino: (context, platform) => CupertinoAppData(
+              theme: const CupertinoThemeData(
+                brightness: Brightness.dark,
+                primaryColor: Colors.black,
+              ),
+            ),
+            home: const HomeScreen(),
+          ),
+        );
+      },
     );
   }
 }

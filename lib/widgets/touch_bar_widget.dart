@@ -10,7 +10,10 @@ class TouchBarWidget extends ConsumerWidget {
     final touchBarInstance = ref.watch(touchBarProvider.notifier);
     return Container(
       color: Colors.black,
-      child: Row(children: touchBarInstance.getChildren),
+      child: Row(
+        children: touchBarInstance.getChildren,
+        mainAxisAlignment: MainAxisAlignment.center,
+      ),
     );
   }
 }
