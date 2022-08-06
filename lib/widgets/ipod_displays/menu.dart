@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:videoipod/displays/agora_display.dart';
+import 'package:videoipod/widgets/display_widget.dart';
 import 'package:videoipod/models/controls.dart';
-
-import '../home_screen.dart';
+import 'package:videoipod/widgets/ipod_displays/agora_display.dart';
 
 class MenuDisplay extends ConsumerWidget {
   const MenuDisplay({Key? key}) : super(key: key);

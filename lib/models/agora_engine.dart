@@ -53,21 +53,23 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
     _refreshToken();
     await _refreshAppId();
     final String? appId = await secureStorage.read(key: "agoraAppId");
-    if (appId == null)
+    if (appId == null) {
       return state.infoStrings
           .add("ERROR: Failed to initialize video call engine. Code Init1");
+    }
     state = state.copyWith(engine: await RtcEngine.create(appId));
-    if (state._engine == null)
+    if (state._engine == null) {
       return state.infoStrings
           .add("ERROR: Failed to initialize video call engine. Code Init2");
+    }
     await state._engine!.enableVideo();
     await state._engine!.setChannelProfile(ChannelProfile.Communication);
     _addAgoraEventHandlers();
 
-    if (state._width == null || state._height == null)
+    if (state._width == null || state._height == null) {
       log("call setDimensions method. Will use default values.");
+    }
     state.infoStrings.add("This is a bug. Please file.");
-
     await state._engine!.setVideoEncoderConfiguration(state._configuration);
   }
 
@@ -105,7 +107,6 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
           state.infoStrings.add("User left the channel");
         },
         userJoined: (uid, elapsed) {
-          print("user joined");
           state = state.copyWith(users: [...state._users, uid]);
           state.infoStrings.add("User joined: $uid");
         },
@@ -129,7 +130,7 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
   Future<bool> _refreshAppId() async {
     Response response;
     response = await dio.get(
-      "http://192.168.4.103:8080/app_id",
+      "http://10.0.0.4:8080/app_id",
     );
     //TODO secure storage not nessesary
     await secureStorage.write(
@@ -143,7 +144,7 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
 
     Response response;
     response = await dio.get(
-      "http://192.168.4.103:8080/access_token",
+      "http://10.0.0.4:8080/access_token",
       queryParameters: {
         'channel_name': state._channel,
       },

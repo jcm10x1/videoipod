@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:videoipod/displays/menu.dart';
-
-import '../home_screen.dart';
+import '../widgets/display_widget.dart';
+import '../widgets/ipod_displays/menu.dart';
 
 class Controls {
   bool _isPaused = false;

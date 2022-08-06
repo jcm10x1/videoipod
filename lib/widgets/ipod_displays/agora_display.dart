@@ -1,12 +1,13 @@
-import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
+import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:videoipod/models/agora_engine.dart';
-import 'package:videoipod/home_screen.dart';
-import 'package:videoipod/displays/menu.dart';
 import 'package:videoipod/models/touch_bar.dart';
+import 'package:videoipod/widgets/ipod_displays/menu.dart';
+
+import '../display_widget.dart';
 
 class AgoraDisplay extends ConsumerWidget {
   const AgoraDisplay({Key? key}) : super(key: key);
@@ -61,10 +62,10 @@ class AgoraDisplay extends ConsumerWidget {
                     width: MediaQuery.of(context).size.width * .2,
                     child: (defaultTargetPlatform == TargetPlatform.iOS ||
                             defaultTargetPlatform == TargetPlatform.android)
-                        ? RtcLocalView.SurfaceView(
+                        ? rtc_local_view.SurfaceView(
                             channelId: engine.channelId,
                           )
-                        : RtcLocalView.TextureView(
+                        : rtc_local_view.TextureView(
                             channelId: engine.channelId,
                           ),
                   ),
@@ -76,11 +77,11 @@ class AgoraDisplay extends ConsumerWidget {
                                 (defaultTargetPlatform == TargetPlatform.iOS ||
                                         defaultTargetPlatform ==
                                             TargetPlatform.android)
-                                    ? RtcRemoteView.SurfaceView(
+                                    ? rtc_remote_view.SurfaceView(
                                         uid: user,
                                         channelId: engine.channelId!,
                                       )
-                                    : RtcRemoteView.TextureView(
+                                    : rtc_remote_view.TextureView(
                                         channelId: engine.channelId!,
                                         uid: user,
                                       ))
