@@ -18,7 +18,7 @@ class MenuDisplay extends ConsumerWidget {
       child: ListView(
         controller: controller,
         children: [
-          const MenuChoice(title: "Video Call", display: AgoraDisplay()),
+          MenuChoice(title: "Video Call", display: AgoraDisplay()),
         ],
       ),
     );

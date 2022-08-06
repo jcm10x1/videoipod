@@ -15,7 +15,7 @@ class AgoraDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final engine = ref.watch(agoraEngineProvider.notifier);
-    final touchBar = ref.read(touchBarProvider.notifier);
+    final touchBar = ref.watch(touchBarProvider);
     engine.setChannelId("test");
     touchBar.clear();
     touchBar.addAll([
@@ -23,14 +23,6 @@ class AgoraDisplay extends ConsumerWidget {
         backgroundColor: Colors.white,
         onPressed: () async {
           await engine.toggleMute();
-          touchBar.replace(
-            0,
-            RoundButton(
-              backgroundColor: Colors.white,
-              onPressed: engine.toggleMute,
-              icon: Icon(engine.isMuted ? Icons.mic : Icons.mic_off),
-            ),
-          );
         },
         icon: Icon(engine.isMuted ? Icons.mic : Icons.mic_off),
       ),

@@ -74,9 +74,12 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
   }
 
   Future<void> _dispose() async {
-    state._users.clear();
     await state._engine?.leaveChannel();
     await state._engine?.destroy();
+    state = state.copyWith(
+      users: [],
+      engine: null,
+    );
   }
 
   void setDimensions(VideoDimensions dimensions) {
