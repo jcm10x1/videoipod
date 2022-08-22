@@ -1,8 +1,11 @@
+import 'package:agora_rtc_engine/rtc_engine.dart' as rtc_engine;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:videoipod/widgets/display_widget.dart';
+import 'package:videoipod/models/active_display.dart';
+import 'package:videoipod/models/agora_engine.dart';
 import 'package:videoipod/models/controls.dart';
-import 'package:videoipod/widgets/ipod_displays/agora_display.dart';
+
+import '../display.dart';
 
 class MenuDisplay extends ConsumerWidget {
   const MenuDisplay({Key? key}) : super(key: key);
@@ -10,15 +13,34 @@ class MenuDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ScrollController controller = ScrollController();
-    ref.read(controlsProvider).scrollController = controller;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(controlsProvider.notifier).setScrollController(controller);
+    });
+
+    final engine = ref.watch(agoraEngineProvider.notifier);
+    final display = ref.watch(activeDisplayProvider.state);
     //TODO pause any content once out of view
-    return Container(
-      padding: const EdgeInsets.all(8),
-      color: Colors.white,
+    return Display(
       child: ListView(
         controller: controller,
         children: [
-          MenuChoice(title: "Video Call", display: AgoraDisplay()),
+          MenuChoice(
+            title: "Video Call",
+            onTap: () async {
+              final status = await engine.status();
+              switch (status) {
+                case rtc_engine.ConnectionStateType.Connected:
+                  display.state = DisplayOptions.agoraCall;
+                  break;
+                case rtc_engine.ConnectionStateType.Connecting:
+                  display.state = DisplayOptions.loading;
+                  break;
+                default:
+                  display.state = DisplayOptions.agoraForm;
+                  break;
+              }
+            },
+          ),
         ],
       ),
     );
@@ -27,24 +49,22 @@ class MenuDisplay extends ConsumerWidget {
 
 class MenuChoice extends ConsumerStatefulWidget {
   final String title;
-  final Widget display;
+  final Function() onTap;
   const MenuChoice({
     required this.title,
-    required this.display,
+    required this.onTap,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MenuChoice1State();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MenuChoiceState();
 }
 
-class _MenuChoice1State extends ConsumerState<MenuChoice> {
-  bool _isSelected = false;
+class _MenuChoiceState extends ConsumerState<MenuChoice> {
+  final bool _isSelected = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        ref.read(activeDisplay.state).state = widget.display;
-      },
+      onTap: widget.onTap,
       child: Container(
         color: _isSelected == true ? Colors.blue : Colors.transparent,
         child: Row(

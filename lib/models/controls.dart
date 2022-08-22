@@ -1,34 +1,67 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/display_widget.dart';
-import '../widgets/ipod_displays/menu.dart';
+import 'package:videoipod/models/active_display.dart';
 
+@immutable
 class Controls {
-  bool _isPaused = false;
-  ScrollController? scrollController;
-  Function() centerPressed = () {
-    print("Center Button Preesed");
-  };
-  Function() menuAction;
-  Function() pausePlayAction = () {
-    print("Pause/Play pressed");
-  };
-  Function() forwardAction = () {
-    print("Fast Forward pressed");
-  };
-  Function() backAction = () {
-    print("Rewind pressed");
-  };
+  final bool isPaused;
+  final ScrollController? scrollController;
+  late final VoidCallback centerPressed;
+  final VoidCallback menuAction;
+  late final VoidCallback pausePlayAction;
+  late final VoidCallback forwardAction;
+  late final VoidCallback backAction;
 
-  Controls({required this.menuAction});
+  Controls({
+    required this.menuAction,
+    this.scrollController,
+    this.isPaused = false,
+    VoidCallback? backAction,
+    VoidCallback? centerPressed,
+    VoidCallback? forwardAction,
+    VoidCallback? pausePlayAction,
+  }) {
+    this.backAction = backAction ?? () {};
+    this.centerPressed = centerPressed ?? () {};
+    this.forwardAction = forwardAction ?? () {};
+    this.pausePlayAction = pausePlayAction ?? () {};
+  }
+
+  Controls copyWith({
+    bool? isPaused,
+    ScrollController? scrollController,
+    VoidCallback? centerPressed,
+    VoidCallback? menuAction,
+    VoidCallback? pausePlayAction,
+    VoidCallback? forwardAction,
+    VoidCallback? backAction,
+  }) {
+    return Controls(
+      isPaused: isPaused ?? this.isPaused,
+      scrollController: scrollController ?? this.scrollController,
+      centerPressed: centerPressed ?? this.centerPressed,
+      menuAction: menuAction ?? this.menuAction,
+      pausePlayAction: pausePlayAction ?? this.pausePlayAction,
+      forwardAction: forwardAction ?? this.forwardAction,
+      backAction: backAction ?? this.backAction,
+    );
+  }
 }
 
 class ControlsNotifier extends StateNotifier<Controls> {
-  ControlsNotifier({required Function() menuAction})
-      : super(Controls(menuAction: menuAction));
+  ControlsNotifier({
+    required Function() menuAction,
+  }) : super(Controls(
+          menuAction: menuAction,
+        ));
 
   void togglePause() {
-    state._isPaused = !state._isPaused;
+    state = state.copyWith(isPaused: !state.isPaused);
+  }
+
+  void setScrollController(ScrollController controller) {
+    state = state.copyWith(scrollController: controller);
   }
 
   panHandler(DragUpdateDetails details, num radius) {
@@ -63,14 +96,15 @@ class ControlsNotifier extends StateNotifier<Controls> {
     state.scrollController
         ?.jumpTo(state.scrollController!.offset + rotationalChange);
   }
-
-  bool get isPaused => state._isPaused;
 }
 
 final controlsProvider =
     StateNotifierProvider<ControlsNotifier, Controls>((ref) {
-  return ControlsNotifier(menuAction: () {
-    ref.read(activeDisplay.state).state = const MenuDisplay();
-  });
+  return ControlsNotifier(
+    menuAction: () {
+      ref.read(activeDisplayProvider.state).state = DisplayOptions.menu;
+    },
+  );
 });
+
 //TODO move the highlighted menu item instead of scroll AND change the item background color

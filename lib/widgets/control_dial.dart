@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:videoipod/models/controls.dart';
 
-class ControlsWidget extends ConsumerWidget {
-  const ControlsWidget({Key? key}) : super(key: key);
+class ControlDial extends ConsumerWidget {
+  const ControlDial({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controls = ref.watch(controlsProvider);
-    bool isPaused = ref.watch(controlsProvider.notifier).isPaused;
+    final controls = ref.read(controlsProvider);
     return Center(
         child: Stack(
       alignment: Alignment.center,
@@ -26,7 +25,7 @@ class ControlsWidget extends ConsumerWidget {
             child: Stack(
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 30),
                   alignment: Alignment.topCenter,
                   child: GestureDetector(
                     onTap: controls.menuAction,
@@ -41,7 +40,7 @@ class ControlsWidget extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(right: 30),
+                  padding: const EdgeInsets.only(right: 30),
                   alignment: Alignment.centerRight,
                   child: IconButton(
                     icon: const Icon(Icons.fast_forward),
@@ -51,10 +50,10 @@ class ControlsWidget extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(bottom: 30),
+                  padding: const EdgeInsets.only(bottom: 30),
                   alignment: Alignment.bottomCenter,
                   child: IconButton(
-                    icon: isPaused
+                    icon: controls.isPaused
                         ? const Icon(Icons.play_arrow)
                         : const Icon(Icons.pause),
                     iconSize: 40,
@@ -63,7 +62,7 @@ class ControlsWidget extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 30),
+                  padding: const EdgeInsets.only(left: 30),
                   alignment: Alignment.centerLeft,
                   child: IconButton(
                     icon: const Icon(Icons.fast_rewind),
