@@ -78,15 +78,18 @@ class ScrollableDisplayState extends ConsumerState<ScrollableDisplay> {
               itemCount: widget.children.length,
               itemBuilder: (context, int currentIndex) {
                 final relativePosition = currentIndex - page;
-                return Transform(
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, .003)
-                    ..scale((1 - relativePosition.abs()).clamp(.2, .6) + .4)
-                    ..rotateY(relativePosition),
-                  alignment: relativePosition >= 0
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
-                  child: widget.children[currentIndex],
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, .003)
+                      ..scale((1 - relativePosition.abs()).clamp(.2, .6) + .4)
+                      ..rotateY(relativePosition),
+                    alignment: relativePosition >= 0
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: widget.children[currentIndex],
+                  ),
                 );
               },
             ),
