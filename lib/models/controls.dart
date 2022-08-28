@@ -92,7 +92,7 @@ class ControlsNotifier extends StateNotifier<Controls> {
     double rotationalChange = (verticalRotation + horizontalRotation) *
         (details.delta.distance * 0.2);
 
-    //Move the page view scroller
+    //Move the page view scroll position
     state.scrollController
         ?.jumpTo(state.scrollController!.offset + rotationalChange);
   }

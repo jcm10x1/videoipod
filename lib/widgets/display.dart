@@ -27,23 +27,39 @@ class Display extends StatelessWidget {
   }
 }
 
-class ScrollableDisplay extends ConsumerWidget {
+class ScrollableDisplay extends ConsumerStatefulWidget {
   final List<Widget> children;
   final Widget overlay;
-  ScrollableDisplay({
+  const ScrollableDisplay({
     Key? key,
     required this.children,
     required this.overlay,
   }) : super(key: key);
 
+  @override
+  ScrollableDisplayState createState() => ScrollableDisplayState();
+}
+
+class ScrollableDisplayState extends ConsumerState<ScrollableDisplay> {
   final PageController _controller = PageController(viewportFraction: .6);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double page = 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(controlsProvider.notifier).setScrollController(_controller);
     });
-
+    _controller.addListener(() {
+      setState(() {
+        page = _controller.page!;
+      });
+    });
     return Display(
       backgroundColor: Colors.black,
       child: ClipRRect(
@@ -51,37 +67,24 @@ class ScrollableDisplay extends ConsumerWidget {
         child: Stack(
           children: [
             PageView.builder(
-                controller: _controller,
-                scrollDirection: Axis.horizontal,
-                itemCount: children.length,
-                itemBuilder: (context, int currentIndex) {
-                  // if (_controller.positions.isEmpty) {
-                  //   children.add(
-                  //     Container(
-                  //       clipBehavior: Clip.antiAlias,
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         borderRadius: BorderRadius.circular(25),
-                  //       ),
-                  //       child: CircularProgressIndicator.adaptive(
-                  //         backgroundColor: Colors.black,
-                  //       ),
-                  //     ),
-                  //   );
-                  // }
-                  final relativePosition = currentIndex - _controller.page!;
-                  return Transform(
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, .003)
-                      ..scale((1 - relativePosition.abs()).clamp(.2, .6) + .4)
-                      ..rotateY(relativePosition),
-                    alignment: relativePosition >= 0
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: children[currentIndex],
-                  );
-                }),
-            overlay,
+              controller: _controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.children.length,
+              itemBuilder: (context, int currentIndex) {
+                final relativePosition = currentIndex - page;
+                return Transform(
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, .003)
+                    ..scale((1 - relativePosition.abs()).clamp(.2, .6) + .4)
+                    ..rotateY(relativePosition),
+                  alignment: relativePosition >= 0
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  child: widget.children[currentIndex],
+                );
+              },
+            ),
+            widget.overlay,
           ],
         ),
       ),

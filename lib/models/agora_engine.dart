@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -71,6 +72,13 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
   AgoraEngineNotifier() : super(AgoraSystem());
 
   var dio = Dio();
+
+  @override
+  void dispose() {
+    state.engine?.leaveChannel();
+    state.engine?.destroy();
+    super.dispose();
+  }
 
   Future<void> _dispose() async {
     await state.engine?.leaveChannel();
