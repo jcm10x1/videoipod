@@ -42,24 +42,30 @@ class ScrollableDisplay extends ConsumerStatefulWidget {
 
 class ScrollableDisplayState extends ConsumerState<ScrollableDisplay> {
   final PageController _controller = PageController(viewportFraction: .6);
+  double page = 0;
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double page = 0;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(controlsProvider.notifier).setScrollController(_controller);
-    });
+  void initState() {
     _controller.addListener(() {
       setState(() {
         page = _controller.page!;
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(controlsProvider.notifier).setScrollController(_controller);
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    ref.read(controlsProvider.notifier).reset();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Display(
       backgroundColor: Colors.black,
       child: ClipRRect(

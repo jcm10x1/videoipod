@@ -64,6 +64,10 @@ class ControlsNotifier extends StateNotifier<Controls> {
     state = state.copyWith(scrollController: controller);
   }
 
+  void reset() {
+    state = Controls(menuAction: state.menuAction);
+  }
+
   panHandler(DragUpdateDetails details, num radius) {
     //Pan location on wheel
     bool onTop = details.localPosition.dy <= radius;
