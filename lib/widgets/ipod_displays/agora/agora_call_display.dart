@@ -25,35 +25,33 @@ class AgoraCallDisplay extends ConsumerWidget {
               ),
             ),
             DraggablePreview(
-              height: MediaQuery.of(context).size.height * .2,
-              width: MediaQuery.of(context).size.width * .2,
               boundaryHeight: constraints.maxHeight,
               boundaryWidth: constraints.maxWidth,
+              height: 150,
+              aspectRatio: MediaQuery.of(context).size.aspectRatio,
             ),
           ],
         );
       }),
       children: engineNotifier.users.isNotEmpty //&& engine.errorMessage == null
-          ? engineNotifier.users
-              .map((user) => (defaultTargetPlatform == TargetPlatform.iOS ||
-                      defaultTargetPlatform == TargetPlatform.android)
-                  ? rtc_remote_view.SurfaceView(
-                      uid: user,
-                      channelId: engineNotifier.channelId!,
-                    )
-                  : rtc_remote_view.TextureView(
-                      channelId: engineNotifier.channelId!,
-                      uid: user,
-                    ))
-              .toList()
+          ? engineNotifier.users.map((user) {
+              if (defaultTargetPlatform == TargetPlatform.iOS ||
+                  defaultTargetPlatform == TargetPlatform.android) {
+                return rtc_remote_view.SurfaceView(
+                  uid: user,
+                  channelId: engineNotifier.channelId!,
+                );
+              } else {
+                return rtc_remote_view.TextureView(
+                  channelId: engineNotifier.channelId!,
+                  uid: user,
+                );
+              }
+            }).toList()
           : [
               Container(
                 alignment: Alignment.center,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
+                color: Colors.white,
                 child: const Text("You are the only one on this call."),
               ),
             ],
@@ -62,17 +60,17 @@ class AgoraCallDisplay extends ConsumerWidget {
 }
 
 class DraggablePreview extends ConsumerStatefulWidget {
-  final double height;
-  final double width;
   final double boundaryHeight;
   final double boundaryWidth;
+  final double height;
+  final double aspectRatio;
 
   const DraggablePreview({
     Key? key,
-    required this.height,
-    required this.width,
     required this.boundaryHeight,
     required this.boundaryWidth,
+    required this.height,
+    required this.aspectRatio,
   }) : super(key: key);
 
   @override
@@ -85,7 +83,7 @@ class DraggablePreviewState extends ConsumerState<DraggablePreview> {
 
   void _updateMaxOffset() {
     _maxOffset = Offset(
-      widget.boundaryWidth - widget.width,
+      widget.boundaryWidth - (widget.height * widget.aspectRatio),
       widget.boundaryHeight - widget.height,
     );
   }
@@ -138,15 +136,17 @@ class DraggablePreviewState extends ConsumerState<DraggablePreview> {
               borderRadius: BorderRadius.circular(15),
             ),
             height: widget.height,
-            width: widget.width,
-            child: (defaultTargetPlatform == TargetPlatform.iOS ||
-                    defaultTargetPlatform == TargetPlatform.android)
-                ? rtc_local_view.SurfaceView(
-                    channelId: engineNotifier.channelId,
-                  )
-                : rtc_local_view.TextureView(
-                    channelId: engineNotifier.channelId,
-                  ),
+            child: AspectRatio(
+              aspectRatio: widget.aspectRatio,
+              child: (defaultTargetPlatform == TargetPlatform.iOS ||
+                      defaultTargetPlatform == TargetPlatform.android)
+                  ? rtc_local_view.SurfaceView(
+                      channelId: engineNotifier.channelId,
+                    )
+                  : rtc_local_view.TextureView(
+                      channelId: engineNotifier.channelId,
+                    ),
+            ),
           ),
         ));
   }
