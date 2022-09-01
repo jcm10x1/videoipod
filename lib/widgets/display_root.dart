@@ -18,7 +18,9 @@ class DisplayRoot extends ConsumerWidget {
     switch (currentDisplay) {
       case DisplayOptions.loading:
         child = const Display(
-          child: CircularProgressIndicator.adaptive(),
+          child: CircularProgressIndicator.adaptive(
+            backgroundColor: Colors.black,
+          ),
         );
         break;
       case DisplayOptions.agoraForm:
