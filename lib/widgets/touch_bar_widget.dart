@@ -48,13 +48,11 @@ class TouchBar extends ConsumerWidget {
                       });
                 },
                 permissionErrorCallback: (permission) {
-                  print("permission error");
                   failureProviderState.state =
                       Failure(message: permission.toString());
                   activeDisplay.state = DisplayOptions.error;
                 },
                 networkErrorCallback: () {
-                  print("network error");
                   failureProviderState.state = Failure(
                     message:
                         "Failed to connect to server. Check internet connection and our system status.",

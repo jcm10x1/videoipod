@@ -11,7 +11,6 @@ class AgoraCallDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final engineNotifier = ref.watch(agoraEngineProvider.notifier);
-
     ref.watch(agoraEngineProvider);
     return ScrollableDisplay(
       overlay: LayoutBuilder(builder: (context, constraints) {
