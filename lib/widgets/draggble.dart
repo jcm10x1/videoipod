@@ -72,12 +72,17 @@ class DraggablePreviewState extends ConsumerState<OurDraggable> {
 
   @override
   Widget build(BuildContext context) {
-    assert((widget.height != null ||
-            widget.width != null && widget.aspectRatio != null) ||
-        widget.height != null && widget.width != null);
-    assert(widget.height == null ||
-        widget.width == null && widget.aspectRatio != null);
-
+    assert((widget.height != null &&
+            widget.width != null &&
+            widget.aspectRatio == null) ||
+        (widget.height != null) ^ (widget.width != null) &&
+            widget.aspectRatio != null);
+    // final providedLayoutProperties =
+    //     [widget.aspectRatio, widget.height, widget.width].where((property) {
+    //   return property == null;
+    // });
+    // assert(providedLayoutProperties.length == 2,
+    //     'Exactly two of aspectRatio, height, or width must be provided');
     return LayoutBuilder(
       builder: (context, constraints) {
         _updateMaxOffset(constraints.maxWidth, constraints.maxHeight);
