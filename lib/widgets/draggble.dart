@@ -28,6 +28,7 @@ class OurDraggable extends ConsumerStatefulWidget {
 class DraggablePreviewState extends ConsumerState<OurDraggable> {
   late Offset _offset = const Offset(0, 0);
   late Offset _maxOffset;
+  bool _didBuild = false;
 
   void _updateMaxOffset(double boundaryWidth, double boundaryHeight) {
     _maxOffset = Offset(
@@ -62,15 +63,6 @@ class DraggablePreviewState extends ConsumerState<OurDraggable> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    const Alignment alignment = Alignment.bottomRight;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _offset = alignment.alongOffset(_maxOffset);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     assert((widget.height != null &&
             widget.width != null &&
@@ -86,6 +78,10 @@ class DraggablePreviewState extends ConsumerState<OurDraggable> {
     return LayoutBuilder(
       builder: (context, constraints) {
         _updateMaxOffset(constraints.maxWidth, constraints.maxHeight);
+        if (!_didBuild) {
+          _offset = widget.alignment.alongOffset(_maxOffset);
+          _didBuild = true;
+        }
         return Container(
           alignment: Alignment.topLeft,
           height: widget.boundaryHeight ?? constraints.maxHeight,

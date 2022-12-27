@@ -32,13 +32,13 @@ class AgoraCallDisplay extends ConsumerWidget {
               if (defaultTargetPlatform == TargetPlatform.iOS ||
                   defaultTargetPlatform == TargetPlatform.android) {
                 return rtc_remote_view.SurfaceView(
-                  uid: user,
+                  uid: user.uid,
                   channelId: engineNotifier.channelId!,
                 );
               } else {
                 return rtc_remote_view.TextureView(
                   channelId: engineNotifier.channelId!,
-                  uid: user,
+                  uid: user.uid,
                 );
               }
             }).toList()

@@ -47,6 +47,10 @@ class ScrollableDisplayState extends ConsumerState<ScrollableDisplay> {
   @override
   void initState() {
     _controller.addListener(() {
+      ref.read(controlsProvider).forwardAction = () {
+        _controller.nextPage(
+            duration: const Duration(seconds: 5), curve: Curves.ease);
+      };
       setState(() {
         page = _controller.page!;
       });
@@ -59,8 +63,8 @@ class ScrollableDisplayState extends ConsumerState<ScrollableDisplay> {
 
   @override
   void dispose() {
-    _controller.dispose();
     ref.read(controlsProvider.notifier).reset();
+    _controller.dispose();
     super.dispose();
   }
 
