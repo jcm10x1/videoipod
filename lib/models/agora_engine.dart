@@ -5,11 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:videoipod/models/user.dart';
 
 @immutable
 class AgoraSystem {
   final String channel;
-  final List<int> users;
+  final List<User> users;
   final bool muted;
   final RtcEngine? engine;
   final int height;
@@ -26,7 +27,7 @@ class AgoraSystem {
 
   AgoraSystem copyWith({
     String? channel,
-    List<int>? users,
+    List<User>? users,
     bool? muted,
     RtcEngine? engine,
     int? height,
@@ -73,12 +74,12 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
 
   var dio = Dio();
 
-  @override
-  void dispose() {
-    state.engine?.leaveChannel();
-    state.engine?.destroy();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   state.engine?.leaveChannel();
+  //   state.engine?.destroy();
+  //   super.dispose();
+  // }
 
   Future<void> _dispose() async {
     await state.engine?.leaveChannel();
@@ -109,12 +110,16 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
         leaveChannel: (stats) {
           state.users.clear();
         },
-        userJoined: (uid, elapsed) {
-          state = state.copyWith(users: [...state.users, uid]);
+        userJoined: (uid, elapsed) async {
+          final UserInfo status = await state.engine!.getUserInfoByUid(uid);
+          final newUser = User(name: "", uid: uid, status: "");
+          state = state.copyWith(users: [...state.users, newUser]);
         },
         userOffline: (uid, reason) {
-          state.users.remove(uid);
-          state = state.copyWith();
+          final offlineUser =
+              state.users.firstWhere((element) => element.uid == uid);
+          state.users.remove(offlineUser);
+          state = state.copyWith(users: [...state.users]);
         },
         firstRemoteVideoFrame: (uid, width, height, elapsed) {},
         connectionLost: () {},
@@ -204,6 +209,8 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
     }
   }
 
+  Stream listenUserStatus() async* {}
+
   Future<void> leaveCall() async {
     await _dispose();
   }
@@ -213,7 +220,7 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
     state = state.copyWith(muted: !state.muted);
   }
 
-  List<int> get users => List.unmodifiable(state.users);
+  List<User> get users => List.unmodifiable(state.users);
   String? get channelId => state.channel;
   bool get isMuted => state.muted;
 }
