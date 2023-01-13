@@ -42,6 +42,8 @@ dependencies:
   uuid: ^3.0.6
   fast_immutable_collections: ^7.4.1
   fpdart: ^0.2.0
+  firebase_core: ^2.4.0
+  firebase_app_check: ^0.1.1+7
 
 dev_dependencies:
   flutter_test:

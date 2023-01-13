@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod/riverpod.dart';
@@ -132,18 +133,32 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
   }
 
   Future<String> _refreshAppId() async {
+    final appCheckToken = await FirebaseAppCheck.instance.getToken();
+    print("token: $appCheckToken");
     final response = await dio.get(
       "https://video-ipod-server-u4dmb6zqva-uc.a.run.app/app_id",
+      options: Options(
+        headers: {
+          'X-Firebase-AppCheck': appCheckToken,
+        },
+      ),
     );
     return response.data["app_id"];
   }
 
   Future<String> _refreshToken() async {
+    final appCheckToken = await FirebaseAppCheck.instance.getToken();
+    print("token: $appCheckToken");
     final response = await dio.get(
       "https://video-ipod-server-u4dmb6zqva-uc.a.run.app/access_token",
       queryParameters: {
         'channel_name': state.channel,
       },
+      options: Options(
+        headers: {
+          'X-Firebase-AppCheck': appCheckToken,
+        },
+      ),
     );
 
     return response.data["token"];
