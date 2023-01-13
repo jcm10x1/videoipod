@@ -36,6 +36,12 @@ pubspec.lock
 # Web related
 lib/generated_plugin_registrant.dart
 
+# iOS related
+**/Podfile.lock
+
+# MacOS related
+macos/Flutter/GeneratedPluginRegistrant.swift
+
 # Symbolication related
 app.*.symbols
 
@@ -50,3 +56,9 @@ app.*.map.json
 android/app/build.gradle
 android/app/src/main/AndroidManifest.xml
 macos/Podfile.lock
+
+# Firebase related
+firebase_options.dart
+**/google-services.json
+**/GoogleService-Info.plist
+**/firebase_app_id_file.json

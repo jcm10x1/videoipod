@@ -133,14 +133,14 @@ class AgoraEngineNotifier extends StateNotifier<AgoraSystem> {
 
   Future<String> _refreshAppId() async {
     final response = await dio.get(
-      "http://192.168.4.103:8080/app_id",
+      "https://video-ipod-server-u4dmb6zqva-uc.a.run.app/app_id",
     );
     return response.data["app_id"];
   }
 
   Future<String> _refreshToken() async {
     final response = await dio.get(
-      "http://192.168.4.103:8080/access_token",
+      "https://video-ipod-server-u4dmb6zqva-uc.a.run.app/access_token",
       queryParameters: {
         'channel_name': state.channel,
       },
